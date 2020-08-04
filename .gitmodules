@@ -2,9 +2,8 @@
 	path = dpdk
 	url = https://dpdk.org/git/dpdk
 	branch = master
-	commit = 0da7f445df445630c794897347ee360d6fe6348b
-#	commit = 92924b207b124c156f7b6dff75110d6af83d971f
-	
+	commit = 7001c8fdb27357c67147c0a13cb3826e48c0f2bf
+
 [submodule "mtcp/src/libccp"]
 	path = mtcp/src/libccp
 	url = https://github.com/ccp-project/libccp.git
