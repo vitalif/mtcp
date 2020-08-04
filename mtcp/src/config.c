@@ -74,7 +74,7 @@ mystrtol(const char *nptr, int base)
 		exit(EXIT_FAILURE);
 	}
 	if (endptr == nptr) {
-		TRACE_CONFIG("Parsing strtol error!\n");
+		TRACE_CONFIG("Parsing strtol error! %s\n", nptr);
 		exit(EXIT_FAILURE);
 	}
 
@@ -632,6 +632,8 @@ ParseConfiguration(char *line)
 			SaveInterfaceInfo(q);
 		else
 			SaveInterfaceInfo(line + strlen(p) + 1);
+	} else if (strncmp(p, "local_ip", 8) == 0) {
+		
 	} else if (strcmp(p, "io") == 0) {
 		AssignIOModule(q);
 		if (CheckIOModuleAccessPermissions() == -1) {

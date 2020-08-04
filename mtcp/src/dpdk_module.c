@@ -691,8 +691,8 @@ dpdk_load_module(void)
 				MEMPOOL_F_SC_GET);
 
 			if (pktmbuf_pool[rxlcore_id] == NULL)
-				rte_exit(EXIT_FAILURE, "Cannot init mbuf pool, errno: %d\n",
-					 rte_errno);
+				rte_exit(EXIT_FAILURE, "Cannot init mbuf pool, errno: %d, error: %s\n",
+					 rte_errno, rte_strerror(rte_errno));
 		}
 
 		/* Initialise each port */

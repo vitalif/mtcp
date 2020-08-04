@@ -251,7 +251,7 @@ mystrtol(const char *nptr, int base)
 		exit(EXIT_FAILURE);
 	}
 	if (endptr == nptr) {
-		fprintf(stderr, "Parsing strtol error!\n");
+		fprintf(stderr, "Parsing strtol error! %s\n", nptr);
 		exit(EXIT_FAILURE);
 	}
 

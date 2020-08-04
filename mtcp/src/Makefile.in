@@ -41,7 +41,7 @@ endif
 # DBGCERR     	= Enable macro to print error statements
 #
 
-GCC_OPT += -Wall -fPIC -fgnu89-inline -Werror
+GCC_OPT += -Wall -fPIC -fgnu89-inline -Werror -Wno-error=stringop-truncation -Wno-error=address-of-packed-member
 #DBG_OPT = -DDBGMSG -DDBGFUNC -DSTREAM -DSTATE -DTSTAT -DAPP -DEPOLL
 #DBG_OPT = -DDBGMSG -DDBGFUNC -DSTREAM -DSTATE
 #DBG_OPT += -DPKTDUMP

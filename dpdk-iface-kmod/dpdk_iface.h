@@ -142,11 +142,11 @@ static const struct net_device_ops netdev_ops = {
         .ndo_open               = netdev_open,
         .ndo_stop               = netdev_open,
         .ndo_start_xmit         = netdev_xmit,
-        .ndo_set_rx_mode        = netdev_no_ret,
+        .ndo_set_rx_mode        = (void*)netdev_no_ret,
         .ndo_validate_addr      = netdev_open,
         .ndo_set_mac_address    = NULL,
         .ndo_change_mtu         = NULL,
-        .ndo_tx_timeout         = netdev_no_ret,
+        .ndo_tx_timeout         = (void*)netdev_no_ret,
         .ndo_vlan_rx_add_vid    = NULL,
         .ndo_vlan_rx_kill_vid   = NULL,
         .ndo_do_ioctl           = NULL,
@@ -162,7 +162,7 @@ static const struct net_device_ops netdev_ops = {
         .ndo_get_stats          = netdev_stats,
         .ndo_setup_tc           = NULL,
 #ifdef CONFIG_NET_POLL_CONTROLLER
-        .ndo_poll_controller    = netdev_no_ret,
+        .ndo_poll_controller    = (void*)netdev_no_ret,
 	.ndo_netpoll_setup	= NULL,
 	.ndo_netpoll_cleanup	= NULL,
 #endif
