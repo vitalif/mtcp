@@ -16,7 +16,6 @@
 #define RTE_ARGC_MAX		(RTE_MAX_ETHPORTS << 1) + 9
 /* for dpdk ethernet functions (get mac addresses) */
 #include <rte_ethdev.h>
-#include <dpdk_iface_common.h>
 /* for ceil func */
 #include <math.h>
 /* for retrieving rte version(s) */

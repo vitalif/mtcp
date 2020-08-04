@@ -16,15 +16,6 @@
 /* for delay funcs */
 #include <rte_cycles.h>
 #include <rte_errno.h>
-#define ENABLE_STATS_IOCTL		1
-#ifdef ENABLE_STATS_IOCTL
-/* for close */
-#include <unistd.h>
-/* for open */
-#include <fcntl.h>
-/* for ioctl */
-#include <sys/ioctl.h>
-#endif /* !ENABLE_STATS_IOCTL */
 /* for ip pseudo-chksum */
 #include <rte_ip.h>
 
@@ -84,10 +75,6 @@ struct dpdk_private_context {
 #ifdef ENABLELRO
 	struct rte_mbuf *cur_rx_m;
 #endif
-#ifdef ENABLE_STATS_IOCTL
-	int fd;
-        uint32_t cur_ts;
-#endif /* !ENABLE_STATS_IOCTL */
 } __rte_cache_aligned;
 
 /* onvm structs */
@@ -96,23 +83,6 @@ struct rte_ring *rx_ring;
 struct rte_ring *tx_ring;
 volatile struct onvm_nf *nf;
 
-#ifdef ENABLE_STATS_IOCTL
-/**
- * stats struct passed on from user space to the driver
- */
-struct stats_struct {
-	uint64_t tx_bytes;
-	uint64_t tx_pkts;
-	uint64_t rx_bytes;
-	uint64_t rx_pkts;
-        uint64_t rmiss;
-        uint64_t rerr;
-        uint64_t terr;
-	uint8_t qid;
-	uint8_t dev;
-
-};
-#endif /* !ENABLE_STATS_IOCTL */
 /*----------------------------------------------------------------------------*/
 void
 onvm_init_handle(struct mtcp_thread_context *ctxt)
@@ -155,15 +125,6 @@ onvm_init_handle(struct mtcp_thread_context *ctxt)
 		/* set mbufs queue length to 0 to begin with */
 		dpc->wmbufs[j].len = 0;
 	}
-
-#ifdef ENABLE_STATS_IOCTL
-	dpc->fd = open("/dev/dpdk-iface", O_RDWR);
-	if (dpc->fd == -1) {
-		TRACE_ERROR("Can't open /dev/dpdk-iface for context->cpu: %d! "
-			    "Are you using mlx4/mlx5 driver?\n",
-			    ctxt->cpu);
-	}
-#endif /* !ENABLE_STATS_IOCTL */
 }
 /*----------------------------------------------------------------------------*/
 int
@@ -201,40 +162,10 @@ onvm_send_pkts(struct mtcp_thread_context *ctxt, int nif)
 	/* if there are packets in the queue... flush them out to the wire */
 	if (dpc->wmbufs[nif].len >/*= MAX_PKT_BURST*/ 0) {
 		struct rte_mbuf **pkts;
-#ifdef ENABLE_STATS_IOCTL
-                struct rte_eth_stats stats;
-		struct stats_struct ss;
-#endif /* !ENABLE_STATS_IOCTL */
 		int cnt = dpc->wmbufs[nif].len;
 		pkts = dpc->wmbufs[nif].m_table;
 #ifdef NETSTAT
 		mtcp->nstat.tx_packets[nif] += cnt;
-#ifdef ENABLE_STATS_IOCTL
-		/* only pass stats after >= 1 sec interval */
-		if (abs(mtcp->cur_ts - dpc->cur_ts) >= 1000 &&
-		    likely(dpc->fd >= 0)) {
-			/* rte_get_stats is global func, use only for 1 core */
-			if (ctxt->cpu == 0) {
-				rte_eth_stats_get(CONFIG.eths[ifidx].ifindex, &stats);
-				ss.rmiss = stats.imissed;
-				ss.rerr = stats.ierrors;
-				ss.terr = stats.oerrors;
-			} else 
-				ss.rmiss = ss.rerr = ss.terr = 0;
-			
-			ss.tx_pkts = mtcp->nstat.tx_packets[ifidx];
-			ss.tx_bytes = mtcp->nstat.tx_bytes[ifidx];
-			ss.rx_pkts = mtcp->nstat.rx_packets[ifidx];
-			ss.rx_bytes = mtcp->nstat.rx_bytes[ifidx];
-			ss.qid = ctxt->cpu;
-			ss.dev = CONFIG.eths[ifidx].ifindex;
-			/* pass the info now */
-			ioctl(dpc->fd, 0, &ss);
-			dpc->cur_ts = mtcp->cur_ts;
-			if (ctxt->cpu == 0)
-				rte_eth_stats_reset(CONFIG.eths[ifidx].ifindex);
-		}
-#endif /* !ENABLE_STATS_IOCTL */
 #endif
 		
 		for (i = 0; i < cnt; i++) {
@@ -406,12 +337,6 @@ onvm_destroy_handle(struct mtcp_thread_context *ctxt)
 	/* free wmbufs */
 	for (i = 0; i < num_devices_attached; i++)
 		free_pkts(dpc->wmbufs[i].m_table, MAX_PKT_BURST);
-
-#ifdef ENABLE_STATS_IOCTL
-	/* free fd */
-	if (dpc->fd >= 0)
-		close(dpc->fd);
-#endif /* !ENABLE_STATS_IOCTL */
 
 	/* free it all up */
 	free(dpc);

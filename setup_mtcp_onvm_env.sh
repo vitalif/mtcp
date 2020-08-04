@@ -25,24 +25,3 @@ fi
 
 printf "${GREEN}RTE_SDK$NC env variable is set to $RTE_SDK\n"
 printf "${GREEN}RTE_TARGET$NC env variable is set to $RTE_TARGET\n"
-
-# Check if you are using an Intel NIC
-while true; do
-    read -p "Are you using an Intel NIC (y/n)? " response
-    case $response in
-	[Yy]* ) break;;
-	[Nn]* ) exit;;
-    esac
-done
-
-# Create interfaces
-printf "Creating ${GREEN}dpdk$NC interface entries\n"
-cd dpdk-iface-kmod
-make
-if lsmod | grep dpdk_iface &> /dev/null ; then
-    :
-else    
-    sudo insmod ./dpdk_iface.ko
-fi
-sudo -E make run
-cd ..
