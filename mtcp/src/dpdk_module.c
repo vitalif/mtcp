@@ -49,16 +49,16 @@
  * controller's datasheet and supporting DPDK documentation for guidance
  * on how these parameters should be set.
  */
-#define RX_PTHRESH 			8 /**< Default values of RX prefetch threshold reg. */
-#define RX_HTHRESH 			8 /**< Default values of RX host threshold reg. */
-#define RX_WTHRESH 			4 /**< Default values of RX write-back threshold reg. */
+#define RX_PTHRESH 			0 /**< Default values of RX prefetch threshold reg. */
+#define RX_HTHRESH 			0 /**< Default values of RX host threshold reg. */
+#define RX_WTHRESH 			0 /**< Default values of RX write-back threshold reg. */
 
 /*
  * These default values are optimized for use with the Intel(R) 82599 10 GbE
  * Controller and the DPDK ixgbe PMD. Consider using other values for other
  * network controllers and/or network drivers.
  */
-#define TX_PTHRESH 			36 /**< Default values of TX prefetch threshold reg. */
+#define TX_PTHRESH 			0  /**< Default values of TX prefetch threshold reg. */
 #define TX_HTHRESH			0  /**< Default values of TX host threshold reg. */
 #define TX_WTHRESH			0  /**< Default values of TX write-back threshold reg. */
 
@@ -151,6 +151,7 @@ static const struct rte_eth_rxconf rx_conf = {
 		.wthresh = 		RX_WTHRESH, /* RX write-back threshold reg */
 	},
 	.rx_free_thresh = 		32,
+	.rx_drop_en = 1,
 };
 
 static const struct rte_eth_txconf tx_conf = {
@@ -571,8 +572,8 @@ dpdk_load_module(void)
 		0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, /* 20 */
 		0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, /* 30 */
 		0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, /* 40 */
-		0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, /* 50 */
-		0x05, 0x05  /* 60 - 8 */
+//		0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, 0x05, /* 50 */
+//		0x05, 0x05  /* 60 - 8 */
 	};
 
 	port_conf.rx_adv_conf.rss_conf.rss_key = (uint8_t *)key;
