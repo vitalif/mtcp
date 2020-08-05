@@ -152,6 +152,7 @@ struct mtcp_config
 {
 	/* network interface config */
 	struct eth_table *eths;
+	char local_ip[20]; // FIXME temporary
 	int *nif_to_eidx; // mapping physic port indexes to that of the configured port-list
 	int eths_num;
 

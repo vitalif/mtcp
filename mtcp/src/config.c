@@ -633,7 +633,7 @@ ParseConfiguration(char *line)
 		else
 			SaveInterfaceInfo(line + strlen(p) + 1);
 	} else if (strncmp(p, "local_ip", 8) == 0) {
-		
+		strncpy(CONFIG.local_ip, line + strlen(p) + 1, 19);
 	} else if (strcmp(p, "io") == 0) {
 		AssignIOModule(q);
 		if (CheckIOModuleAccessPermissions() == -1) {

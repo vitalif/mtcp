@@ -38,9 +38,9 @@
 #define MBUF_SIZE 			(BUF_SIZE + sizeof(struct rte_mbuf) + RTE_PKTMBUF_HEADROOM)
 #define NB_MBUF				8192
 #define MEMPOOL_CACHE_SIZE		256
-#ifdef ENFORCE_RX_IDLE
-#define RX_IDLE_ENABLE			1
-#define RX_IDLE_TIMEOUT			1	/* in micro-seconds */
+#ifdef ENFORCE_RX_IDLE0
+#define RX_IDLE_ENABLE			0
+#define RX_IDLE_TIMEOUT			0	/* in micro-seconds */
 #endif
 
 /*

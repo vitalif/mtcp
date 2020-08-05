@@ -297,12 +297,12 @@ SetNetEnv(char *dev_name_list, char *port_stat_list)
 		num_queues = MIN(CONFIG.num_cores, MAX_CPUS);
 
 		uint16_t port_id = 0;
-		const char *port_name = "0000:05:00.1";
+		const char *port_name = dev_name_list;
 		if (rte_eth_dev_get_port_by_name(port_name, &port_id) == 0) {
 			eidx = CONFIG.eths_num++;
 			strcpy(CONFIG.eths[eidx].dev_name, port_name);
 			CONFIG.eths[eidx].ifindex = port_id;
-			inet_aton("192.168.7.2", (struct in_addr*)&CONFIG.eths[eidx].ip_addr);
+			inet_aton(CONFIG.local_ip, (struct in_addr*)&CONFIG.eths[eidx].ip_addr);
 			inet_aton("255.255.255.0", (struct in_addr*)&CONFIG.eths[eidx].netmask);
 #if RTE_VERSION < RTE_VERSION_NUM(19, 8, 0, 0)
 			static struct ether_addr port_haddr;
